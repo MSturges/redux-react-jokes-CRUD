@@ -1,12 +1,13 @@
-import { FETCH_POSTS, FETCH_POST} from '../actions/index';
+import { FETCH_JOKES } from '../actions/index';
 
-const INITIAL_State = { all: [], post: null };
+const INITIAL_STATE = { jokes: [], post: null };
 
-export default function(state = INITIAL_State, action) {
+export default function(state = INITIAL_STATE, action) {
+
   switch (action.type) {
 
     case FETCH_JOKES:
-      return { ...state, all: action.payload.data };
+      return { ...state, jokes: action.payload.data };
 
     default:
       return state;
