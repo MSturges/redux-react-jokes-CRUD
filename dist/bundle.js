@@ -75,7 +75,7 @@
 
 	var _routes2 = _interopRequireDefault(_routes);
 
-	var _reduxPromise = __webpack_require__(290);
+	var _reduxPromise = __webpack_require__(292);
 
 	var _reduxPromise2 = _interopRequireDefault(_reduxPromise);
 
@@ -27371,8 +27371,6 @@
 
 	var _reducer_jokes2 = _interopRequireDefault(_reducer_jokes);
 
-	var _reduxForm = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"redux-form\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var rootReducer = (0, _redux.combineReducers)({
@@ -28939,11 +28937,11 @@
 
 	var _reactRouter = __webpack_require__(200);
 
-	var _app = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/app\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _app = __webpack_require__(290);
 
 	var _app2 = _interopRequireDefault(_app);
 
-	var _jokes_index = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/jokes_index\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _jokes_index = __webpack_require__(291);
 
 	var _jokes_index2 = _interopRequireDefault(_jokes_index);
 
@@ -28961,13 +28959,142 @@
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var App = function (_Component) {
+	  _inherits(App, _Component);
+
+	  function App() {
+	    _classCallCheck(this, App);
+
+	    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+	  }
+
+	  _createClass(App, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        this.props.children
+	      );
+	    }
+	  }]);
+
+	  return App;
+	}(_react.Component);
+
+	exports.default = App;
+
+/***/ },
+/* 291 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(160);
+
+	var _index = __webpack_require__(263);
+
+	var _reactRouter = __webpack_require__(200);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var PostIndex = function (_Component) {
+	  _inherits(PostIndex, _Component);
+
+	  function PostIndex() {
+	    _classCallCheck(this, PostIndex);
+
+	    return _possibleConstructorReturn(this, (PostIndex.__proto__ || Object.getPrototypeOf(PostIndex)).apply(this, arguments));
+	  }
+
+	  _createClass(PostIndex, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.props.fetchPosts();
+	    }
+	  }, {
+	    key: 'renderPosts',
+	    value: function renderPosts() {
+	      return this.props.jokes.map(function (joke) {
+	        return _react2.default.createElement('li', { className: 'list-group-item', key: joke.id });
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'This is the jokes index file!!!'
+	        ),
+	        _react2.default.createElement(
+	          'ul',
+	          null,
+	          this.renderPosts()
+	        )
+	      );
+	    }
+	  }]);
+
+	  return PostIndex;
+	}(_react.Component);
+
+	function mapStatetoProps(state) {
+	  return { jokes: state.posts.all };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStatetoProps, { fetchJokes: _index.fetchJokes })(JokeIndex);
+
+/***/ },
+/* 292 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	exports.__esModule = true;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	exports['default'] = promiseMiddleware;
 
-	var _fluxStandardAction = __webpack_require__(291);
+	var _fluxStandardAction = __webpack_require__(293);
 
 	function isPromise(val) {
 	  return val && typeof val.then === 'function';
@@ -28994,7 +29121,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 291 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29005,7 +29132,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _lodashIsplainobject = __webpack_require__(292);
+	var _lodashIsplainobject = __webpack_require__(294);
 
 	var _lodashIsplainobject2 = _interopRequireDefault(_lodashIsplainobject);
 
@@ -29024,7 +29151,7 @@
 	}
 
 /***/ },
-/* 292 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -29035,9 +29162,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseFor = __webpack_require__(293),
-	    isArguments = __webpack_require__(294),
-	    keysIn = __webpack_require__(295);
+	var baseFor = __webpack_require__(295),
+	    isArguments = __webpack_require__(296),
+	    keysIn = __webpack_require__(297);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -29133,7 +29260,7 @@
 
 
 /***/ },
-/* 293 */
+/* 295 */
 /***/ function(module, exports) {
 
 	/**
@@ -29187,7 +29314,7 @@
 
 
 /***/ },
-/* 294 */
+/* 296 */
 /***/ function(module, exports) {
 
 	/**
@@ -29422,7 +29549,7 @@
 
 
 /***/ },
-/* 295 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -29433,8 +29560,8 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var isArguments = __webpack_require__(294),
-	    isArray = __webpack_require__(296);
+	var isArguments = __webpack_require__(296),
+	    isArray = __webpack_require__(298);
 
 	/** Used to detect unsigned integer values. */
 	var reIsUint = /^\d+$/;
@@ -29560,7 +29687,7 @@
 
 
 /***/ },
-/* 296 */
+/* 298 */
 /***/ function(module, exports) {
 
 	/**
