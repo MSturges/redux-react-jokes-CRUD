@@ -4,7 +4,7 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 
-const api = require('./api_routes/routes');
+const api = require('./routes/api');
 
 var app = express();
 
