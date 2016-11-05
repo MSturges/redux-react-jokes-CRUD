@@ -1,0 +1,22 @@
+{
+  "name": "dist",
+  "homepage": "https://github.com/MSturges/redux-react-jokes-CRUD",
+  "authors": [
+    "MSturges <Sturges3232@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "www/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "font-awesome": "^4.6.3"
+  }
+}
