@@ -13,8 +13,19 @@ router.get('/jokes', (req,res,next) => {
   })
 })
 
-router.post('/createJoke', (req,res,next) => {
+router.get('/jokes/:id', (req,res,next) => {
+  knex('jokes')
+  .where({id: req.params.id})
+  .first()
+  .then((joke) => {
+    res.status(200).json(joke);
+  })
+  .catch((err) => {
+    res.json(err);
+  })
+})
 
+router.post('/createJoke', (req,res,next) => {
   if(req.body.title && req.body.genre && req.body.author && req.body.joke){
     knex('jokes')
     .insert(req.body)
@@ -31,5 +42,20 @@ router.post('/createJoke', (req,res,next) => {
     res.json({message: 'Incomplete request'});
   }
 })
+
+router.delete('/jokes/:id', (req,res,next) => {
+  knex('jokes')
+  .where({id: req.params.id})
+  .del()
+  .then(() => {
+    res.status(200).json({message: `Deleted joke with id of: ${req.params.id}`});
+  })
+  .catch((err) => {
+    res.json(err);
+  })
+})
+
+
+
 
 module.exports = router;

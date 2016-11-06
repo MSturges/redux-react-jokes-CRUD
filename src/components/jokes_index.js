@@ -9,45 +9,41 @@ class JokeIndex extends Component {
     this.props.fetchJokes()
   }
 
-  // renderPosts(){
-  //   console.log('renderPosts:', this.props.jokes);
-  //   if (!this.props.jokes.length) {
-  //     return this.props.jokes.map((joke) => {
-  //       return (
-  //         <li className="list-group-item" key={joke.id}>
-  //         </li>
-  //       );
-  //     });
-  //   } else {
-  //     return (
-  //       <div>
-  //       <h1 className="animated infinite bounce">Loading...</h1>
-  //         <i className="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-  //       </div>
-  //     );
-  //   }
-  // }
-
   renderPosts(){
-    return this.props.jokes.map((joke) => {
+    if (this.props.jokes.jokes.length > 0) {
+      return this.props.jokes.jokes.map((joke) => {
+        return (
+          <li className="joke-list animated bounceInLeft" key={joke.id}>
+          <div className="joke-list-item-container">
+            <p className="joke-list-item">Title: {joke.title}</p>
+            <p className="joke-list-item">genre: {joke.genre}</p>
+            <p className="joke-list-item">Author: {joke.author}</p>
+          </div>
+          <p className="joke-list-joke">Joke:{joke.joke}</p>
+          <div className="joke-list-edit">
+          <Link to={"joke/" + joke.id}>Edit/Delete</Link>
+          </div>
+          </li>
+        );
+      });
+    } else {
       return (
-        <li className="list-group-item" key={joke.id}>
-        <Link to={"joke/" + joke.id}>
-        <strong>{joke.title}</strong>
-        </Link>
-        </li>
+        <div>
+        <h1 className="animated infinite bounce">Loading...</h1>
+        </div>
       );
-    });
+    }
   }
-
 
   render() {
     return (
       <div>
-      <Link to="/joke/new" className="btn btn-primary">
-      Add Joke
-      </Link>
-      <h1>This is the jokes index file!!!</h1>
+      <div className="header">
+        <h1>Browse & Share your favorite Jokes!</h1>
+      </div>
+      <div className="button">
+        <Link to="/joke/new"> Add Joke </Link>
+      </div>
       <ul>
       {this.renderPosts()}
       </ul>

@@ -75,11 +75,11 @@
 
 	var _routes2 = _interopRequireDefault(_routes);
 
-	var _reduxPromise = __webpack_require__(337);
+	var _reduxPromise = __webpack_require__(338);
 
 	var _reduxPromise2 = _interopRequireDefault(_reduxPromise);
 
-	__webpack_require__(344);
+	__webpack_require__(345);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27406,6 +27406,9 @@
 	    case _index.FETCH_JOKES:
 	      return _extends({}, state, { jokes: action.payload.data });
 
+	    case _index.FETCH_JOKE:
+	      return _extends({}, state, { joke: action.payload.data });
+
 	    default:
 	      return state;
 	  }
@@ -27413,7 +27416,7 @@
 
 	var _index = __webpack_require__(263);
 
-	var INITIAL_STATE = { jokes: [], post: null };
+	var INITIAL_STATE = { jokes: [], joke: null };
 
 /***/ },
 /* 263 */
@@ -27424,9 +27427,11 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.CREATE_JOKE = exports.FETCH_JOKES = undefined;
+	exports.DELETE_JOKE = exports.FETCH_JOKE = exports.CREATE_JOKE = exports.FETCH_JOKES = undefined;
 	exports.fetchJokes = fetchJokes;
+	exports.fetchJoke = fetchJoke;
 	exports.createJoke = createJoke;
+	exports.deleteJoke = deleteJoke;
 
 	var _axios = __webpack_require__(264);
 
@@ -27436,6 +27441,8 @@
 
 	var FETCH_JOKES = exports.FETCH_JOKES = 'FETCH_JOKES';
 	var CREATE_JOKE = exports.CREATE_JOKE = 'CREATE_JOKE';
+	var FETCH_JOKE = exports.FETCH_JOKE = 'FETCH_JOKE';
+	var DELETE_JOKE = exports.DELETE_JOKE = 'DELETE_JOKE';
 
 	var ROOT_URL = '/api/v1';
 
@@ -27448,11 +27455,29 @@
 	  };
 	}
 
+	function fetchJoke(id) {
+	  var request = _axios2.default.get(ROOT_URL + '/jokes/' + id);
+
+	  return {
+	    type: FETCH_JOKE,
+	    payload: request
+	  };
+	}
+
 	function createJoke(props) {
 	  var request = _axios2.default.post(ROOT_URL + '/createJoke', props);
 
 	  return {
 	    type: CREATE_JOKE,
+	    payload: request
+	  };
+	}
+
+	function deleteJoke(id) {
+	  var request = _axios2.default.delete(ROOT_URL + '/jokes/' + id);
+
+	  return {
+	    type: DELETE_JOKE,
 	    payload: request
 	  };
 	}
@@ -31890,13 +31915,18 @@
 
 	var _jokes_new2 = _interopRequireDefault(_jokes_new);
 
+	var _joke_show = __webpack_require__(337);
+
+	var _joke_show2 = _interopRequireDefault(_joke_show);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = _react2.default.createElement(
 	  _reactRouter.Route,
 	  { path: '/', component: _app2.default },
 	  _react2.default.createElement(_reactRouter.IndexRoute, { component: _jokes_index2.default }),
-	  _react2.default.createElement(_reactRouter.Route, { path: 'joke/new', component: _jokes_new2.default })
+	  _react2.default.createElement(_reactRouter.Route, { path: 'joke/new', component: _jokes_new2.default }),
+	  _react2.default.createElement(_reactRouter.Route, { path: 'joke/:id', component: _joke_show2.default })
 	);
 
 /***/ },
@@ -31995,10 +32025,40 @@
 	  }, {
 	    key: 'renderPosts',
 	    value: function renderPosts() {
-	      console.log('renderPosts:', this.props.jokes);
-	      if (!this.props.jokes.length) {
-	        return this.props.jokes.map(function (joke) {
-	          return _react2.default.createElement('li', { className: 'list-group-item', key: joke.id });
+	      if (this.props.jokes.jokes.length > 0) {
+	        return this.props.jokes.jokes.map(function (joke) {
+	          return _react2.default.createElement(
+	            'li',
+	            { className: 'list-group-item animated bounceInLeft', key: joke.id },
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: "joke/" + joke.id },
+	              _react2.default.createElement(
+	                'h2',
+	                null,
+	                'Title: ',
+	                joke.title
+	              ),
+	              _react2.default.createElement(
+	                'h3',
+	                null,
+	                'genre: ',
+	                joke.genre
+	              ),
+	              _react2.default.createElement(
+	                'h3',
+	                null,
+	                'Author: ',
+	                joke.author
+	              ),
+	              _react2.default.createElement(
+	                'p',
+	                null,
+	                'Joke:',
+	                joke.joke
+	              )
+	            )
+	          );
 	        });
 	      } else {
 	        return _react2.default.createElement(
@@ -32008,8 +32068,7 @@
 	            'h1',
 	            { className: 'animated infinite bounce' },
 	            'Loading...'
-	          ),
-	          _react2.default.createElement('i', { className: 'fa fa-spinner fa-pulse fa-3x fa-fw' })
+	          )
 	        );
 	      }
 	    }
@@ -32020,14 +32079,14 @@
 	        'div',
 	        null,
 	        _react2.default.createElement(
-	          _reactRouter.Link,
-	          { to: '/joke/new', className: 'btn btn-primary' },
-	          'Add Joke'
-	        ),
-	        _react2.default.createElement(
 	          'h1',
 	          null,
-	          'This is the jokes index file!!!'
+	          'Browse & Share your favorite Jokes!'
+	        ),
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/joke/new', className: 'btn btn-primary' },
+	          ' Add Joke '
 	        ),
 	        _react2.default.createElement(
 	          'ul',
@@ -32229,13 +32288,138 @@
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(160);
+
+	var _index = __webpack_require__(263);
+
+	var _reactRouter = __webpack_require__(200);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var JokeShow = function (_Component) {
+	  _inherits(JokeShow, _Component);
+
+	  function JokeShow() {
+	    _classCallCheck(this, JokeShow);
+
+	    return _possibleConstructorReturn(this, (JokeShow.__proto__ || Object.getPrototypeOf(JokeShow)).apply(this, arguments));
+	  }
+
+	  _createClass(JokeShow, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.props.fetchJoke(this.props.params.id);
+	    }
+	  }, {
+	    key: 'onDeleteClick',
+	    value: function onDeleteClick() {
+	      var _this2 = this;
+
+	      this.props.deleteJoke(this.props.params.id).then(function () {
+	        _this2.context.router.push('/');
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var joke = this.props.joke;
+
+	      if (!joke) return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          { className: 'animated infinite bounce' },
+	          'Loading...'
+	        )
+	      );
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/' },
+	          'Back To Jokes'
+	        ),
+	        _react2.default.createElement(
+	          'button',
+	          {
+	            onClick: this.onDeleteClick.bind(this),
+	            className: 'btn btn-danger pull-xs-right' },
+	          'Delete Post'
+	        ),
+	        _react2.default.createElement(
+	          'h2',
+	          null,
+	          'Title: ',
+	          joke.title
+	        ),
+	        _react2.default.createElement(
+	          'h3',
+	          null,
+	          'genre: ',
+	          joke.genre
+	        ),
+	        _react2.default.createElement(
+	          'h3',
+	          null,
+	          'Author: ',
+	          joke.author
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'Joke:',
+	          joke.joke
+	        )
+	      );
+	    }
+	  }]);
+
+	  return JokeShow;
+	}(_react.Component);
+
+	JokeShow.contextTypes = {
+	  router: _react.PropTypes.object
+	};
+
+
+	function mapStateToProps(state) {
+	  return { joke: state.jokes.joke };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchJoke: _index.fetchJoke, deleteJoke: _index.deleteJoke })(JokeShow);
+
+/***/ },
+/* 338 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	exports.__esModule = true;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	exports['default'] = promiseMiddleware;
 
-	var _fluxStandardAction = __webpack_require__(338);
+	var _fluxStandardAction = __webpack_require__(339);
 
 	function isPromise(val) {
 	  return val && typeof val.then === 'function';
@@ -32262,7 +32446,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 338 */
+/* 339 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32273,7 +32457,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _lodashIsplainobject = __webpack_require__(339);
+	var _lodashIsplainobject = __webpack_require__(340);
 
 	var _lodashIsplainobject2 = _interopRequireDefault(_lodashIsplainobject);
 
@@ -32292,7 +32476,7 @@
 	}
 
 /***/ },
-/* 339 */
+/* 340 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32303,9 +32487,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseFor = __webpack_require__(340),
-	    isArguments = __webpack_require__(341),
-	    keysIn = __webpack_require__(342);
+	var baseFor = __webpack_require__(341),
+	    isArguments = __webpack_require__(342),
+	    keysIn = __webpack_require__(343);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -32401,7 +32585,7 @@
 
 
 /***/ },
-/* 340 */
+/* 341 */
 /***/ function(module, exports) {
 
 	/**
@@ -32455,7 +32639,7 @@
 
 
 /***/ },
-/* 341 */
+/* 342 */
 /***/ function(module, exports) {
 
 	/**
@@ -32690,7 +32874,7 @@
 
 
 /***/ },
-/* 342 */
+/* 343 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32701,8 +32885,8 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var isArguments = __webpack_require__(341),
-	    isArray = __webpack_require__(343);
+	var isArguments = __webpack_require__(342),
+	    isArray = __webpack_require__(344);
 
 	/** Used to detect unsigned integer values. */
 	var reIsUint = /^\d+$/;
@@ -32828,7 +33012,7 @@
 
 
 /***/ },
-/* 343 */
+/* 344 */
 /***/ function(module, exports) {
 
 	/**
@@ -33014,16 +33198,16 @@
 
 
 /***/ },
-/* 344 */
+/* 345 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(345);
+	var content = __webpack_require__(346);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(347)(content, {});
+	var update = __webpack_require__(348)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -33040,21 +33224,21 @@
 	}
 
 /***/ },
-/* 345 */
+/* 346 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(346)();
+	exports = module.exports = __webpack_require__(347)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "body {\n  background-color: #a499a4; }\n\nh1 {\n  color: blue; }\n", ""]);
+	exports.push([module.id, "body {\n  background: url(\"/images/background.jpeg\") no-repeat center center fixed;\n  -webkit-background-size: cover;\n  -moz-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover; }\n\nbody {\n  background-color: #a499a4; }\n\nh1 {\n  color: blue; }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 346 */
+/* 347 */
 /***/ function(module, exports) {
 
 	/*
@@ -33110,7 +33294,7 @@
 
 
 /***/ },
-/* 347 */
+/* 348 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
