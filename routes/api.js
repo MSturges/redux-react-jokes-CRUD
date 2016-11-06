@@ -56,7 +56,6 @@ router.delete('/jokes/:id', (req,res,next) => {
 })
 
 router.put('/jokes/:id', (req,res,next) => {
-  console.log('IN THE EDIT ROUTE!', req.body);
   if(req.body.title && req.body.genre && req.body.author && req.body.joke){
     knex('jokes')
     .where({id: req.params.id})
@@ -70,7 +69,5 @@ router.put('/jokes/:id', (req,res,next) => {
     })
   }
 })
-
-
 
 module.exports = router;

@@ -14,7 +14,6 @@ class JokeEditt extends Component {
     .then(()=> {
       console.log(this.state);
     })
-
   }
 
   onSubmit(formData) {
@@ -90,7 +89,7 @@ function validate(values) {
 }
 
 export default reduxForm({
-  form: 'PostNewForm',
+  form: 'PostEditForm',
   fields: ['title', 'genre', 'author', 'joke'],
   validate: validate
 }, (state) => {

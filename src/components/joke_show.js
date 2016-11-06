@@ -31,7 +31,7 @@ class JokeShow extends Component {
 
       <h3 className="firstH3"><span className="">Title</span></h3>
       <h4 className="joke-show-item">{joke.title}</h4>
-      
+
       <h3><span className="">Genre</span></h3>
       <h4 className="joke-show-item">{joke.genre}</h4>
 
@@ -42,7 +42,8 @@ class JokeShow extends Component {
       <p className="col-md-8 col-sm-8 col-xs-8 joke-show-joke">{joke.joke}</p>
       <div className="col-md-2 joke-show-edit">
       <Link to="/">Back To Jokes</Link>
-      <Link to="/joke/edit/:id">Edit</Link>
+      <Link to={"/joke/edit/" + joke.id}>Edit</Link>
+
       <button
       onClick={this.onDeleteClick.bind(this)}
       className="btn btn-danger pull-xs-right">

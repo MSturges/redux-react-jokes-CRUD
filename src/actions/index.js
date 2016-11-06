@@ -46,7 +46,7 @@ export function deleteJoke(id) {
 }
 
 export function editJoke(id, data) {
-  const request = axios.put(`${ROOT_URL}/blogs/${id}`, data);
+  const request = axios.put(`${ROOT_URL}/jokes/${id}`, data);
 
   return {
     type: EDIT_JOKE,
