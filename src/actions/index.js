@@ -4,6 +4,7 @@ export const FETCH_JOKES = 'FETCH_JOKES';
 export const CREATE_JOKE = 'CREATE_JOKE';
 export const FETCH_JOKE = 'FETCH_JOKE';
 export const DELETE_JOKE = 'DELETE_JOKE';
+export const EDIT_JOKE = 'EDIT_JOKE';
 
 const ROOT_URL = 'http://localhost:3000/api/v1';
 // const ROOT_URL = '/api/v1';
@@ -27,7 +28,7 @@ export function fetchJoke(id) {
 }
 
 export function createJoke(props) {
-  const request = axios.post(`${ROOT_URL}/createJoke`, props);
+  const request = axios.post(`${ROOT_URL}/jokes`, props);
 
   return {
     type: CREATE_JOKE,
@@ -42,4 +43,13 @@ export function deleteJoke(id) {
     type: DELETE_JOKE,
     payload: request
   };
+}
+
+export function editJoke(id, data) {
+  const request = axios.put(`${ROOT_URL}/blogs/${id}`, data);
+
+  return {
+    type: EDIT_JOKE,
+    payload: request
+  }
 }

@@ -21,7 +21,8 @@ class PostNew extends Component {
     const { fields: { title, genre, author, joke } , handleSubmit } = this.props;
 
     return (
-      <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+
+      <form className="animated bounceInDown" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
         <h3>Create A New Post</h3>
         <div className={ `form-group ${title.touched && title.invalid ? 'has-danger': ''}`}>
           <label>Title</label>
@@ -47,9 +48,10 @@ class PostNew extends Component {
           <div className='text-help form-control-label'>{joke.touched ? joke.error : ''}</div>
         </div>
 
+        <Link to="/" className="btn btn-danger">Back</Link>
         <button type="submit" className="btn btn-primary">Submit</button>
-        <Link to="/" className="btn btn-danger">Cancel</Link>
       </form>
+
     );
   }
 }

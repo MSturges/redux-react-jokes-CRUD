@@ -1,9 +1,12 @@
 body {
-  background: url("/images/background4.jpeg") no-repeat center center fixed;
+  background: url("/images/piano.jpeg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+.container{
+  padding: 0;
 }
 
 .header {
@@ -12,63 +15,7 @@ body {
   text-align: center;
   border: 2px solid orange;
   margin-top: 20px;
-
   h1 {
     color: orange;
-  }
-
-}
-
-.button {
-  margin: auto;
-  width: 50%;
-  height: 50px;
-  width: 200px;
-  border: 2px solid white;
-  color: blue;
-  border-radius: 10px;
-  text-align: center;
-}
-
-
-ul {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-
-  .joke-list {
-    background-color: rgba(0, 0, 0, .8);
-    list-style-type: none;
-    border-radius: 10px;
-    border: 2px solid orange;
-    margin-bottom: 20px;
-
-    .joke-list-item-container {
-      border: 1px solid red;
-      
-
-      .joke-list-item {
-        text-align: left;
-        color: orange;
-        padding-left: 30px;
-        margin-bottom: 0px;
-        font-size: 17px;
-      }
-    }
-    .joke-list-joke {
-      text-align: center;
-      color: orange;
-    }
-
-    .joke-list-edit {
-      text-align: right;
-      padding-right: 30px;
-      padding-bottom: 20px;
-
-      a{
-        color: orange;
-        font-size: 20px;
-      }
-    }
-
   }
 }

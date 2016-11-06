@@ -1,0 +1,39 @@
+form {
+  border: 3px solid black;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, .8);
+  transition: margin-top .2s,   margin-left .2s, margin-right .2s;
+  h3{
+    text-align: center;
+    color: white;
+  }
+  label {
+    color: white;
+  }
+  input {
+    color: black;
+  }
+}
+
+@media (min-width: 300px) {
+  form {
+    margin-top: 20%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+}
+@media (min-width: 500px) {
+  form {
+    margin-top: 20%;
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+}
+@media (min-width: 500px) {
+  form {
+    margin-top: 10%;
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}

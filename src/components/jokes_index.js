@@ -2,53 +2,72 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchJokes } from '../actions/index';
 import { Link } from 'react-router';
+import MobileList from './jokes_index_components/jokes_mobile';
+import WebList from './jokes_index_components/jokes_web';
+
 
 class JokeIndex extends Component {
 
+  constructor(props) {
+    super(props);
+    this.updateDimensions = this.updateDimensions.bind(this);
+  }
   componentWillMount() {
     this.props.fetchJokes()
+    window.addEventListener("resize", this.updateDimensions);
+    this.updateDimensions();
   }
+  updateDimensions() {
+    var w = window,
+    d = document,
+    documentElement = d.documentElement,
+    body = d.getElementsByTagName('body')[0],
+    width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
+    height = w.innerHeight|| documentElement.clientHeight|| body.clientHeight;
 
-  renderPosts(){
-    if (this.props.jokes.jokes.length > 0) {
-      return this.props.jokes.jokes.map((joke) => {
-        return (
-          <li className="joke-list animated bounceInLeft" key={joke.id}>
-          <div className="joke-list-item-container">
-            <p className="joke-list-item">Title: {joke.title}</p>
-            <p className="joke-list-item">genre: {joke.genre}</p>
-            <p className="joke-list-item">Author: {joke.author}</p>
-          </div>
-          <p className="joke-list-joke">Joke:{joke.joke}</p>
-          <div className="joke-list-edit">
-          <Link to={"joke/" + joke.id}>Edit/Delete</Link>
-          </div>
-          </li>
-        );
-      });
-    } else {
-      return (
-        <div>
-        <h1 className="animated infinite bounce">Loading...</h1>
-        </div>
-      );
-    }
+    this.setState({width, height});
+  }
+  componentDidMount() {
+    window.addEventListener("resize", this.updateDimensions);
+  }
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
   }
 
   render() {
-    return (
-      <div>
-      <div className="header">
-        <h1>Browse & Share your favorite Jokes!</h1>
-      </div>
-      <div className="button">
-        <Link to="/joke/new"> Add Joke </Link>
-      </div>
-      <ul>
-      {this.renderPosts()}
-      </ul>
-      </div>
-    );
+    if (this.props.jokes.jokes.length > 0) {
+      if (this.state.width < 900) {
+        return (
+          <div>
+          <div className="header">
+          <h1>Browse & Share your favorite Jokes!</h1>
+          </div>
+          <div className="button-container">
+          <Link className="animated bounceInDown button" to="/joke/new"> Add Joke </Link>
+          </div>
+          <MobileList jokes={this.props.jokes.jokes}/>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+          <div className="header">
+          <h1>Browse & Share your favorite Jokes!</h1>
+          </div>
+          <div className="button-container">
+          <Link className="animated bounceInLeft button" to="/joke/new"> Add Joke </Link>
+          </div>
+          <WebList jokes={this.props.jokes.jokes}/>
+          </div>
+        );
+      }
+    } else {
+      return (
+        <div>
+        <h1 className="animated infinite bounce">Loading...Would ya give it a Second?</h1>
+        </div>
+      );
+    }
   }
 }
 

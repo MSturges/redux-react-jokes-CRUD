@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
     table.string('title');
     table.string('genre');
     table.string('author');
-    table.string('joke');
+    table.string('joke', 1000);
     table.timestamps();
   })
 };

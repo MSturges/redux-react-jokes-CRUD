@@ -25,7 +25,7 @@ router.get('/jokes/:id', (req,res,next) => {
   })
 })
 
-router.post('/createJoke', (req,res,next) => {
+router.post('/jokes', (req,res,next) => {
   if(req.body.title && req.body.genre && req.body.author && req.body.joke){
     knex('jokes')
     .insert(req.body)
@@ -55,6 +55,21 @@ router.delete('/jokes/:id', (req,res,next) => {
   })
 })
 
+router.put('/jokes/:id', (req,res,next) => {
+  console.log('IN THE EDIT ROUTE!', req.body);
+  if(req.body.title && req.body.genre && req.body.author && req.body.joke){
+    knex('jokes')
+    .where({id: req.params.id})
+    .update(req.body)
+    .returning('*')
+    .then((blog) => {
+      res.status(200).json(blog);
+    })
+    .catch((err) => {
+      res.json(err);
+    })
+  }
+})
 
 
 

@@ -1,0 +1,42 @@
+.joke-show{
+  margin-top: 20%;
+  background-color: rgba(0, 0, 0, .8);
+  border: 3px solid black;
+  border-radius: 10px;
+}
+.joke-show-item-container {
+  .firstH3 {
+    margin-top: 10px;
+  }
+  h3 {
+    margin: 0;
+    text-align: left;
+  }
+
+  .joke-show-item {
+    text-align: left;
+    color: orange;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    font-size: 17px;
+  }
+}
+.joke-show-joke {
+  border-top: none;
+  border-left: 3px solid black;
+  border-right: 3px solid black;
+  color: orange;
+  word-break: break-all;
+  text-align: left;
+  vertical-align: middle;
+}
+.joke-show-edit {
+  height: 180px;
+  text-align: center;
+  vertical-align: middle;
+  a {
+    color: orange;
+    font-size: 20px;
+    text-decoration: none;
+  }
+}
