@@ -75,11 +75,11 @@
 
 	var _routes2 = _interopRequireDefault(_routes);
 
-	var _reduxPromise = __webpack_require__(338);
+	var _reduxPromise = __webpack_require__(341);
 
 	var _reduxPromise2 = _interopRequireDefault(_reduxPromise);
 
-	__webpack_require__(345);
+	__webpack_require__(348);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27427,11 +27427,12 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.DELETE_JOKE = exports.FETCH_JOKE = exports.CREATE_JOKE = exports.FETCH_JOKES = undefined;
+	exports.EDIT_JOKE = exports.DELETE_JOKE = exports.FETCH_JOKE = exports.CREATE_JOKE = exports.FETCH_JOKES = undefined;
 	exports.fetchJokes = fetchJokes;
 	exports.fetchJoke = fetchJoke;
 	exports.createJoke = createJoke;
 	exports.deleteJoke = deleteJoke;
+	exports.editJoke = editJoke;
 
 	var _axios = __webpack_require__(264);
 
@@ -27443,7 +27444,9 @@
 	var CREATE_JOKE = exports.CREATE_JOKE = 'CREATE_JOKE';
 	var FETCH_JOKE = exports.FETCH_JOKE = 'FETCH_JOKE';
 	var DELETE_JOKE = exports.DELETE_JOKE = 'DELETE_JOKE';
+	var EDIT_JOKE = exports.EDIT_JOKE = 'EDIT_JOKE';
 
+	// const ROOT_URL = 'http://localhost:3000/api/v1';
 	var ROOT_URL = '/api/v1';
 
 	function fetchJokes() {
@@ -27465,7 +27468,7 @@
 	}
 
 	function createJoke(props) {
-	  var request = _axios2.default.post(ROOT_URL + '/createJoke', props);
+	  var request = _axios2.default.post(ROOT_URL + '/jokes', props);
 
 	  return {
 	    type: CREATE_JOKE,
@@ -27478,6 +27481,15 @@
 
 	  return {
 	    type: DELETE_JOKE,
+	    payload: request
+	  };
+	}
+
+	function editJoke(id, data) {
+	  var request = _axios2.default.put(ROOT_URL + '/jokes/' + id, data);
+
+	  return {
+	    type: EDIT_JOKE,
 	    payload: request
 	  };
 	}
@@ -31911,13 +31923,17 @@
 
 	var _jokes_index2 = _interopRequireDefault(_jokes_index);
 
-	var _jokes_new = __webpack_require__(336);
+	var _jokes_new = __webpack_require__(338);
 
 	var _jokes_new2 = _interopRequireDefault(_jokes_new);
 
-	var _joke_show = __webpack_require__(337);
+	var _joke_show = __webpack_require__(339);
 
 	var _joke_show2 = _interopRequireDefault(_joke_show);
+
+	var _joke_edit = __webpack_require__(340);
+
+	var _joke_edit2 = _interopRequireDefault(_joke_edit);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31926,7 +31942,8 @@
 	  { path: '/', component: _app2.default },
 	  _react2.default.createElement(_reactRouter.IndexRoute, { component: _jokes_index2.default }),
 	  _react2.default.createElement(_reactRouter.Route, { path: 'joke/new', component: _jokes_new2.default }),
-	  _react2.default.createElement(_reactRouter.Route, { path: 'joke/:id', component: _joke_show2.default })
+	  _react2.default.createElement(_reactRouter.Route, { path: 'joke/:id', component: _joke_show2.default }),
+	  _react2.default.createElement(_reactRouter.Route, { path: 'joke/edit/:id', component: _joke_edit2.default })
 	);
 
 /***/ },
@@ -32000,6 +32017,14 @@
 
 	var _reactRouter = __webpack_require__(200);
 
+	var _jokes_mobile = __webpack_require__(336);
+
+	var _jokes_mobile2 = _interopRequireDefault(_jokes_mobile);
+
+	var _jokes_web = __webpack_require__(337);
+
+	var _jokes_web2 = _interopRequireDefault(_jokes_web);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32011,89 +32036,118 @@
 	var JokeIndex = function (_Component) {
 	  _inherits(JokeIndex, _Component);
 
-	  function JokeIndex() {
+	  function JokeIndex(props) {
 	    _classCallCheck(this, JokeIndex);
 
-	    return _possibleConstructorReturn(this, (JokeIndex.__proto__ || Object.getPrototypeOf(JokeIndex)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (JokeIndex.__proto__ || Object.getPrototypeOf(JokeIndex)).call(this, props));
+
+	    _this.updateDimensions = _this.updateDimensions.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(JokeIndex, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.props.fetchJokes();
+	      window.addEventListener("resize", this.updateDimensions);
+	      this.updateDimensions();
 	    }
 	  }, {
-	    key: 'renderPosts',
-	    value: function renderPosts() {
+	    key: 'updateDimensions',
+	    value: function updateDimensions() {
+	      var w = window,
+	          d = document,
+	          documentElement = d.documentElement,
+	          body = d.getElementsByTagName('body')[0],
+	          width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
+	          height = w.innerHeight || documentElement.clientHeight || body.clientHeight;
+
+	      this.setState({ width: width, height: height });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      window.addEventListener("resize", this.updateDimensions);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      window.removeEventListener("resize", this.updateDimensions);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
 	      if (this.props.jokes.jokes.length > 0) {
-	        return this.props.jokes.jokes.map(function (joke) {
+	        if (this.state.width < 900) {
 	          return _react2.default.createElement(
-	            'li',
-	            { className: 'list-group-item animated bounceInLeft', key: joke.id },
+	            'div',
+	            null,
 	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { to: "joke/" + joke.id },
+	              'div',
+	              { className: 'header' },
 	              _react2.default.createElement(
-	                'h2',
+	                'h1',
 	                null,
-	                'Title: ',
-	                joke.title
-	              ),
-	              _react2.default.createElement(
-	                'h3',
-	                null,
-	                'genre: ',
-	                joke.genre
-	              ),
-	              _react2.default.createElement(
-	                'h3',
-	                null,
-	                'Author: ',
-	                joke.author
-	              ),
-	              _react2.default.createElement(
-	                'p',
-	                null,
-	                'Joke:',
-	                joke.joke
+	                'Comedy Cellar'
 	              )
-	            )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'button-container' },
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { className: 'animated bounceInDown button', to: '/joke/new' },
+	                ' Add Joke '
+	              )
+	            ),
+	            _react2.default.createElement(_jokes_mobile2.default, { jokes: this.props.jokes.jokes })
 	          );
-	        });
+	        } else {
+	          return _react2.default.createElement(
+	            'div',
+	            { className: 'wtf' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'header' },
+	              _react2.default.createElement(
+	                'h1',
+	                null,
+	                'Welcome to the'
+	              ),
+	              _react2.default.createElement(
+	                'h1',
+	                null,
+	                'Comedy Cellar'
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'button-container' },
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { className: 'animated bounceInLeft button', to: '/joke/new' },
+	                ' Add Joke '
+	              )
+	            ),
+	            _react2.default.createElement(_jokes_web2.default, { jokes: this.props.jokes.jokes })
+	          );
+	        }
 	      } else {
 	        return _react2.default.createElement(
 	          'div',
 	          null,
 	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { className: 'animated bounceInDown button', to: '/joke/new' },
+	            ' Add Joke '
+	          ),
+	          _react2.default.createElement(
 	            'h1',
 	            { className: 'animated infinite bounce' },
-	            'Loading...'
+	            'Loading...Would ya give it a Second?'
 	          )
 	        );
 	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          'Browse & Share your favorite Jokes!'
-	        ),
-	        _react2.default.createElement(
-	          _reactRouter.Link,
-	          { to: '/joke/new', className: 'btn btn-primary' },
-	          ' Add Joke '
-	        ),
-	        _react2.default.createElement(
-	          'ul',
-	          null,
-	          this.renderPosts()
-	        )
-	      );
 	    }
 	  }]);
 
@@ -32108,6 +32162,154 @@
 
 /***/ },
 /* 336 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(200);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var MobileList = function MobileList(props) {
+	  var MobileItems = props.jokes.map(function (joke) {
+	    return _react2.default.createElement(
+	      'li',
+	      { className: 'joke-li animated bounceInUp row', key: joke.id },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'col-md-12 col-sm-12 col-xs-12 joke-details ' },
+	        _react2.default.createElement(
+	          'h3',
+	          null,
+	          joke.title
+	        ),
+	        _react2.default.createElement(
+	          'ul',
+	          { className: 'fa-ul' },
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement('i', { className: 'fa-li fa fa-user-circle fa-3x ', 'aria-hidden': 'true' }),
+	            joke.author
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement('i', { className: 'fa-li fa fa fa-tags fa-3x ', 'aria-hidden': 'true' }),
+	            joke.genre
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'edit-btn-container' },
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { className: 'edit-btn ', to: "joke/" + joke.id },
+	            'Edit/Delete'
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'p',
+	        { className: 'col-md-12 col-sm-12 col-xs-12 joke-list-joke' },
+	        joke.joke
+	      )
+	    );
+	  });
+
+	  return _react2.default.createElement(
+	    'ul',
+	    { className: 'row' },
+	    MobileItems
+	  );
+	};
+
+	exports.default = MobileList;
+
+/***/ },
+/* 337 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(200);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var WebList = function WebList(props) {
+	  var WebItems = props.jokes.map(function (joke) {
+	    return _react2.default.createElement(
+	      'li',
+	      { className: 'joke-li animated bounceInLeft row', key: joke.id },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'col-lg-2 col-md-2 col-lg-2 joke-details ' },
+	        _react2.default.createElement(
+	          'h3',
+	          null,
+	          joke.title
+	        ),
+	        _react2.default.createElement(
+	          'ul',
+	          { className: 'fa-ul' },
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement('i', { className: 'fa-li fa fa-user-circle fa-3x ', 'aria-hidden': 'true' }),
+	            joke.author
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement('i', { className: 'fa-li fa fa fa-tags fa-3x ', 'aria-hidden': 'true' }),
+	            joke.genre
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'edit-btn-container' },
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { className: 'edit-btn', to: "joke/" + joke.id },
+	            'Edit/Delete'
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'p',
+	        { className: 'col-lg-10 col-md-10 col-sm-10 col-xs-10 joke-list-joke' },
+	        joke.joke
+	      )
+	    );
+	  });
+
+	  return _react2.default.createElement(
+	    'ul',
+	    { className: 'row' },
+	    WebItems
+	  );
+	};
+
+	exports.default = WebList;
+
+/***/ },
+/* 338 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32170,11 +32372,11 @@
 
 	      return _react2.default.createElement(
 	        'form',
-	        { onSubmit: handleSubmit(this.onSubmit.bind(this)) },
+	        { className: 'animated bounceInDown', onSubmit: handleSubmit(this.onSubmit.bind(this)) },
 	        _react2.default.createElement(
 	          'h3',
 	          null,
-	          'Create A New Post'
+	          'Create A New Joke'
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -32187,7 +32389,7 @@
 	          _react2.default.createElement('input', _extends({ type: 'text', className: 'form-control' }, title)),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'text-help form-control-label' },
+	            { className: 'text-danger' },
 	            title.touched ? title.error : ''
 	          )
 	        ),
@@ -32202,7 +32404,7 @@
 	          _react2.default.createElement('input', _extends({ type: 'text', className: 'form-control' }, genre)),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'text-help form-control-label' },
+	            { className: 'text-danger' },
 	            genre.touched ? genre.error : ''
 	          )
 	        ),
@@ -32217,7 +32419,7 @@
 	          _react2.default.createElement('input', _extends({ type: 'text', className: 'form-control' }, author)),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'text-help form-control-label' },
+	            { className: 'text-danger' },
 	            author.touched ? author.error : ''
 	          )
 	        ),
@@ -32232,19 +32434,27 @@
 	          _react2.default.createElement('textarea', _extends({ type: 'text', className: 'form-control' }, joke)),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'text-help form-control-label' },
+	            { className: 'text-danger' },
 	            joke.touched ? joke.error : ''
 	          )
 	        ),
 	        _react2.default.createElement(
-	          'button',
-	          { type: 'submit', className: 'btn btn-primary' },
-	          'Submit'
+	          'div',
+	          { className: 'submit-btn-container' },
+	          _react2.default.createElement(
+	            'button',
+	            { type: 'submit', className: 'submit-btn' },
+	            'Submit'
+	          )
 	        ),
 	        _react2.default.createElement(
-	          _reactRouter.Link,
-	          { to: '/', className: 'btn btn-danger' },
-	          'Cancel'
+	          'div',
+	          { className: 'back-btn-container' },
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: '/', className: 'back-btn' },
+	            'Back'
+	          )
 	        )
 	      );
 	    }
@@ -32264,15 +32474,23 @@
 	  if (!values.title) {
 	    errors.title = 'Enter a Title';
 	  }
+	  if (values.title && values.title.length > 20) errors.title = 'Cannot exceed 20 characters';
+
 	  if (!values.genre) {
 	    errors.genre = 'Enter a Genre';
 	  }
+	  if (values.genre && values.genre.length > 20) errors.genre = 'Cannot exceed 20 characters';
+
 	  if (!values.author) {
 	    errors.author = 'Enter an Author';
 	  }
+	  if (values.author && values.author.length > 20) errors.author = 'Cannot exceed 20 characters';
+
 	  if (!values.joke) {
 	    errors.joke = 'Enter some Content';
 	  }
+	  if (values.joke && values.joke.length > 900) errors.joke = 'Cannot exceed 900 characters';
+
 	  return errors;
 	}
 
@@ -32283,7 +32501,7 @@
 	}, null, { createJoke: _index.createJoke })(PostNew);
 
 /***/ },
-/* 337 */
+/* 339 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32315,16 +32533,43 @@
 	var JokeShow = function (_Component) {
 	  _inherits(JokeShow, _Component);
 
-	  function JokeShow() {
+	  function JokeShow(props) {
 	    _classCallCheck(this, JokeShow);
 
-	    return _possibleConstructorReturn(this, (JokeShow.__proto__ || Object.getPrototypeOf(JokeShow)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (JokeShow.__proto__ || Object.getPrototypeOf(JokeShow)).call(this, props));
+
+	    _this.updateDimensions = _this.updateDimensions.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(JokeShow, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.props.fetchJoke(this.props.params.id);
+	      window.addEventListener("resize", this.updateDimensions);
+	      this.updateDimensions();
+	    }
+	  }, {
+	    key: 'updateDimensions',
+	    value: function updateDimensions() {
+	      var w = window,
+	          d = document,
+	          documentElement = d.documentElement,
+	          body = d.getElementsByTagName('body')[0],
+	          width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
+	          height = w.innerHeight || documentElement.clientHeight || body.clientHeight;
+
+	      this.setState({ width: width, height: height });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      window.addEventListener("resize", this.updateDimensions);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      window.removeEventListener("resize", this.updateDimensions);
 	    }
 	  }, {
 	    key: 'onDeleteClick',
@@ -32350,44 +32595,149 @@
 	        )
 	      );
 
+	      if (this.state.width < 900) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'ul',
+	            null,
+	            _react2.default.createElement(
+	              'li',
+	              { className: 'joke-single animated bounceInLeft row', key: joke.id },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'col-lg-6 col-md-6 col-sm-6 col-xs-6 joke-details ' },
+	                _react2.default.createElement(
+	                  'h3',
+	                  null,
+	                  joke.title
+	                ),
+	                _react2.default.createElement(
+	                  'ul',
+	                  { className: 'fa-ul' },
+	                  _react2.default.createElement(
+	                    'li',
+	                    null,
+	                    _react2.default.createElement('i', { className: 'fa-li fa fa-user-circle fa-3x ', 'aria-hidden': 'true' }),
+	                    joke.author
+	                  ),
+	                  _react2.default.createElement(
+	                    'li',
+	                    null,
+	                    _react2.default.createElement('i', { className: 'fa-li fa fa fa-tags fa-3x ', 'aria-hidden': 'true' }),
+	                    joke.genre
+	                  )
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'col-lg-6 col-md-6 col-sm-6 col-xs-6 btn-show-container' },
+	                _react2.default.createElement(
+	                  'div',
+	                  { className: 'back-btn-container' },
+	                  _react2.default.createElement(
+	                    _reactRouter.Link,
+	                    { className: 'back-btn', to: '/' },
+	                    'Back'
+	                  )
+	                ),
+	                _react2.default.createElement(
+	                  'div',
+	                  { className: 'edit-btn-container' },
+	                  _react2.default.createElement(
+	                    _reactRouter.Link,
+	                    { className: 'edit-btn', to: "/joke/edit/" + joke.id },
+	                    'Edit'
+	                  )
+	                ),
+	                _react2.default.createElement(
+	                  'div',
+	                  { className: 'delete-btn-container' },
+	                  _react2.default.createElement(
+	                    'button',
+	                    { onClick: this.onDeleteClick.bind(this), className: 'delete-btn' },
+	                    'Delete'
+	                  )
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'p',
+	                { className: 'col-lg-10 col-md-10 col-sm-10 col-xs-10 joke-list-joke' },
+	                joke.joke
+	              )
+	            )
+	          )
+	        );
+	      }
+
 	      return _react2.default.createElement(
 	        'div',
 	        null,
 	        _react2.default.createElement(
-	          _reactRouter.Link,
-	          { to: '/' },
-	          'Back To Jokes'
-	        ),
-	        _react2.default.createElement(
-	          'button',
-	          {
-	            onClick: this.onDeleteClick.bind(this),
-	            className: 'btn btn-danger pull-xs-right' },
-	          'Delete Post'
-	        ),
-	        _react2.default.createElement(
-	          'h2',
+	          'ul',
 	          null,
-	          'Title: ',
-	          joke.title
-	        ),
-	        _react2.default.createElement(
-	          'h3',
-	          null,
-	          'genre: ',
-	          joke.genre
-	        ),
-	        _react2.default.createElement(
-	          'h3',
-	          null,
-	          'Author: ',
-	          joke.author
-	        ),
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          'Joke:',
-	          joke.joke
+	          _react2.default.createElement(
+	            'li',
+	            { className: 'joke-single animated bounceInLeft row', key: joke.id },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'col-lg-2 col-md-2 col-sm-2 joke-details ' },
+	              _react2.default.createElement(
+	                'h3',
+	                null,
+	                joke.title
+	              ),
+	              _react2.default.createElement(
+	                'ul',
+	                { className: 'fa-ul' },
+	                _react2.default.createElement(
+	                  'li',
+	                  null,
+	                  _react2.default.createElement('i', { className: 'fa-li fa fa-user-circle fa-3x ', 'aria-hidden': 'true' }),
+	                  joke.author
+	                ),
+	                _react2.default.createElement(
+	                  'li',
+	                  null,
+	                  _react2.default.createElement('i', { className: 'fa-li fa fa fa-tags fa-3x ', 'aria-hidden': 'true' }),
+	                  joke.genre
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'back-btn-container' },
+	                _react2.default.createElement(
+	                  _reactRouter.Link,
+	                  { className: 'back-btn', to: '/' },
+	                  'Back'
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'edit-btn-container' },
+	                _react2.default.createElement(
+	                  _reactRouter.Link,
+	                  { className: 'edit-btn', to: "/joke/edit/" + joke.id },
+	                  'Edit'
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'delete-btn-container' },
+	                _react2.default.createElement(
+	                  'button',
+	                  { onClick: this.onDeleteClick.bind(this), className: 'delete-btn' },
+	                  'Delete'
+	                )
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'p',
+	              { className: 'col-lg-10 col-md-10 col-sm-10 col-xs-10 joke-list-joke' },
+	              joke.joke
+	            )
+	          )
 	        )
 	      );
 	    }
@@ -32408,7 +32758,238 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchJoke: _index.fetchJoke, deleteJoke: _index.deleteJoke })(JokeShow);
 
 /***/ },
-/* 338 */
+/* 340 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reduxForm = __webpack_require__(289);
+
+	var _index = __webpack_require__(263);
+
+	var _reactRouter = __webpack_require__(200);
+
+	var _axios = __webpack_require__(264);
+
+	var _axios2 = _interopRequireDefault(_axios);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var JokeEditt = function (_Component) {
+	  _inherits(JokeEditt, _Component);
+
+	  function JokeEditt() {
+	    _classCallCheck(this, JokeEditt);
+
+	    return _possibleConstructorReturn(this, (JokeEditt.__proto__ || Object.getPrototypeOf(JokeEditt)).apply(this, arguments));
+	  }
+
+	  _createClass(JokeEditt, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _this2 = this;
+
+	      this.props.fetchJoke(this.props.params.id).then(function () {
+	        console.log(_this2.state);
+	      });
+	    }
+	  }, {
+	    key: 'onSubmit',
+	    value: function onSubmit(formData) {
+	      var _this3 = this;
+
+	      console.log('Edit form data...', formData);
+	      this.props.editJoke(this.props.params.id, formData).then(function () {
+	        _this3.context.router.push('/');
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          _props$fields = _props.fields,
+	          title = _props$fields.title,
+	          genre = _props$fields.genre,
+	          author = _props$fields.author,
+	          joke = _props$fields.joke,
+	          handleSubmit = _props.handleSubmit;
+
+
+	      if (!joke) return _react2.default.createElement(
+	        'div',
+	        null,
+	        'Loading...'
+	      );
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'form',
+	            { className: 'animated bounceInDown', onSubmit: handleSubmit(this.onSubmit.bind(this)) },
+	            _react2.default.createElement(
+	              'h3',
+	              null,
+	              'Edit Joke'
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group ' + (title.touched && title.invalid ? 'has-danger' : '') },
+	              _react2.default.createElement(
+	                'label',
+	                null,
+	                'Title'
+	              ),
+	              _react2.default.createElement('input', _extends({ type: 'text', className: 'form-control' }, title)),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'text-danger' },
+	                title.touched ? title.error : ''
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group ' + (genre.touched && genre.invalid ? 'has-danger' : '') },
+	              _react2.default.createElement(
+	                'label',
+	                null,
+	                'Genre'
+	              ),
+	              _react2.default.createElement('input', _extends({ type: 'text', className: 'form-control' }, genre)),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'text-danger' },
+	                genre.touched ? genre.error : ''
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group ' + (author.touched && author.invalid ? 'has-danger' : '') },
+	              _react2.default.createElement(
+	                'label',
+	                null,
+	                'Author'
+	              ),
+	              _react2.default.createElement('input', _extends({ type: 'text', className: 'form-control' }, author)),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'text-danger' },
+	                author.touched ? author.error : ''
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'form-group ' + (joke.touched && joke.invalid ? 'has-danger' : '') },
+	              _react2.default.createElement(
+	                'label',
+	                null,
+	                'Content'
+	              ),
+	              _react2.default.createElement('textarea', _extends({ type: 'text', className: 'form-control' }, joke)),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'text-danger' },
+	                joke.touched ? joke.error : ''
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'submit-btn-container' },
+	              _react2.default.createElement(
+	                'button',
+	                { type: 'submit', className: 'submit-btn' },
+	                'Submit'
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'back-btn-container' },
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: '/', className: 'back-btn' },
+	                'Back'
+	              )
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return JokeEditt;
+	}(_react.Component);
+
+	JokeEditt.contextTypes = {
+	  router: _react.PropTypes.object
+	};
+
+
+	function validate(values) {
+	  var errors = {};
+
+	  if (!values.title) {
+	    errors.title = 'Enter a Title';
+	  }
+	  if (values.title && values.title.length > 20) errors.title = 'Cannot exceed 20 characters';
+
+	  if (!values.genre) {
+	    errors.genre = 'Enter a Genre';
+	  }
+	  if (values.genre && values.genre.length > 20) errors.genre = 'Cannot exceed 20 characters';
+
+	  if (!values.author) {
+	    errors.author = 'Enter an Author';
+	  }
+	  if (values.author && values.author.length > 20) errors.author = 'Cannot exceed 20 characters';
+
+	  if (!values.joke) {
+	    errors.joke = 'Enter some Content';
+	  }
+	  if (values.joke && values.joke.length > 900) errors.joke = 'Cannot exceed 900 characters';
+
+	  return errors;
+	}
+
+	exports.default = (0, _reduxForm.reduxForm)({
+	  form: 'PostEditForm',
+	  fields: ['title', 'genre', 'author', 'joke'],
+	  validate: validate
+	}, function (state) {
+	  if (state.jokes.joke) {
+	    return {
+	      initialValues: {
+	        title: state.jokes.joke.title,
+	        genre: state.jokes.joke.genre,
+	        author: state.jokes.joke.author,
+	        joke: state.jokes.joke.joke
+	      }
+	    };
+	  }
+	}, { editJoke: _index.editJoke, fetchJoke: _index.fetchJoke })(JokeEditt);
+
+/***/ },
+/* 341 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32419,7 +33000,7 @@
 
 	exports['default'] = promiseMiddleware;
 
-	var _fluxStandardAction = __webpack_require__(339);
+	var _fluxStandardAction = __webpack_require__(342);
 
 	function isPromise(val) {
 	  return val && typeof val.then === 'function';
@@ -32446,7 +33027,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 339 */
+/* 342 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32457,7 +33038,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _lodashIsplainobject = __webpack_require__(340);
+	var _lodashIsplainobject = __webpack_require__(343);
 
 	var _lodashIsplainobject2 = _interopRequireDefault(_lodashIsplainobject);
 
@@ -32476,7 +33057,7 @@
 	}
 
 /***/ },
-/* 340 */
+/* 343 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32487,9 +33068,9 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var baseFor = __webpack_require__(341),
-	    isArguments = __webpack_require__(342),
-	    keysIn = __webpack_require__(343);
+	var baseFor = __webpack_require__(344),
+	    isArguments = __webpack_require__(345),
+	    keysIn = __webpack_require__(346);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -32585,7 +33166,7 @@
 
 
 /***/ },
-/* 341 */
+/* 344 */
 /***/ function(module, exports) {
 
 	/**
@@ -32639,7 +33220,7 @@
 
 
 /***/ },
-/* 342 */
+/* 345 */
 /***/ function(module, exports) {
 
 	/**
@@ -32874,7 +33455,7 @@
 
 
 /***/ },
-/* 343 */
+/* 346 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32885,8 +33466,8 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var isArguments = __webpack_require__(342),
-	    isArray = __webpack_require__(344);
+	var isArguments = __webpack_require__(345),
+	    isArray = __webpack_require__(347);
 
 	/** Used to detect unsigned integer values. */
 	var reIsUint = /^\d+$/;
@@ -33012,7 +33593,7 @@
 
 
 /***/ },
-/* 344 */
+/* 347 */
 /***/ function(module, exports) {
 
 	/**
@@ -33198,16 +33779,16 @@
 
 
 /***/ },
-/* 345 */
+/* 348 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(346);
+	var content = __webpack_require__(349);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(348)(content, {});
+	var update = __webpack_require__(351)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -33224,21 +33805,21 @@
 	}
 
 /***/ },
-/* 346 */
+/* 349 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(347)();
+	exports = module.exports = __webpack_require__(350)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "body {\n  background: url(\"/images/background.jpeg\") no-repeat center center fixed;\n  -webkit-background-size: cover;\n  -moz-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover; }\n\nbody {\n  background-color: #a499a4; }\n\nh1 {\n  color: blue; }\n", ""]);
+	exports.push([module.id, "body {\n  background: url(\"/images/background7.jpeg\") no-repeat center center fixed;\n  -webkit-background-size: cover;\n  -moz-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n  box-sizing: border-box;\n  padding: 0;\n  margin: 0; }\n\n.container {\n  padding: 0; }\n\n.header {\n  background-color: rgba(0, 0, 0, 0.95);\n  height: 230px;\n  padding-top: 1px;\n  border-radius: 30px;\n  text-align: center;\n  margin-top: 35px;\n  margin-left: 10px;\n  margin-right: 15px;\n  box-shadow: 2px 2px 10px 10px #f3c400; }\n  .header h1 {\n    font-family: 'Shrikhand', cursive;\n    color: #f3c400;\n    font-size: 75px;\n    text-shadow: 12px 12px #d91919; }\n  .header h1:first-child {\n    padding-right: 10%; }\n  .header h1:nth-child(2) {\n    padding-left: 10%; }\n\n.button-container {\n  margin-top: 35px;\n  margin-right: 10px;\n  height: 60px;\n  text-align: right;\n  vertical-align: middle; }\n  .button-container .button {\n    padding: 3px;\n    display: inline-block;\n    text-align: center;\n    font-size: 20px;\n    height: 40px;\n    width: 35%;\n    background-color: rgba(255, 255, 255, 0);\n    border: 4px solid white;\n    border-radius: 5px;\n    color: white;\n    transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n  .button-container .button:hover {\n    margin-bottom: 12px;\n    padding: 5px;\n    height: 45px;\n    width: 40%;\n    border: 5px solid white;\n    background-color: #0a953e;\n    text-decoration: none;\n    cursor: pointer; }\n\nbody {\n  overflow-x: hidden; }\n\nul {\n  font-family: 'PT Sans', sans-serif;\n  padding-left: 30px !important; }\n  ul .joke-li {\n    margin-bottom: 100px;\n    width: 100%;\n    height: auto;\n    background-color: rgba(0, 0, 0, 0.8);\n    list-style-type: none;\n    border-radius: 10px;\n    border: 3px solid #f3c400;\n    margin-bottom: 20px; }\n    ul .joke-li .joke-details h3 {\n      color: #f3c400;\n      text-decoration: underline;\n      text-align: center; }\n    ul .joke-li .joke-details ul {\n      padding-top: 15px;\n      margin-left: 40px;\n      margin-bottom: 15px; }\n      ul .joke-li .joke-details ul li {\n        color: #f3c400;\n        width: 100%;\n        padding-top: 17px;\n        padding-bottom: 17px; }\n        ul .joke-li .joke-details ul li i {\n          color: #d91919;\n          padding-left: 0px; }\n      ul .joke-li .joke-details ul li:first-child {\n        width: 100%; }\n\n.joke-list-joke {\n  color: #f3c400;\n  word-break: break-all;\n  vertical-align: middle;\n  font-family: 'PT Sans', sans-serif;\n  font-size: 19px;\n  font-style: normal; }\n\n.edit-btn-container {\n  padding-top: 10px;\n  padding-botom: 0;\n  height: 60px;\n  text-align: left; }\n  .edit-btn-container .edit-btn {\n    display: inline-block;\n    text-align: center;\n    font-size: 20px;\n    height: 40px;\n    padding: 3px;\n    cursor: pointer;\n    width: 120px;\n    background-color: rgba(255, 255, 255, 0);\n    border: 4px solid #c2c2c2;\n    border-radius: 5px;\n    color: #c2c2c2;\n    transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n  .edit-btn-container .edit-btn:hover {\n    margin-bottom: 12px;\n    padding: 5px;\n    height: 45px;\n    width: 130px;\n    border: 5px solid #c2c2c2;\n    background-color: #03346b;\n    text-decoration: none; }\n\n.btn-show-container .back-btn-container {\n  text-align: center; }\n\n.btn-show-container .edit-btn-container {\n  text-align: center; }\n\n.btn-show-container .delete-btn-container {\n  padding-top: 10px;\n  padding-botom: 0;\n  height: 60px;\n  text-align: center; }\n  .btn-show-container .delete-btn-container .delete-btn {\n    display: inline-block;\n    text-align: center;\n    font-size: 20px;\n    height: 40px;\n    padding: 3px;\n    cursor: pointer;\n    width: 120px;\n    background-color: rgba(255, 255, 255, 0);\n    border: 4px solid #c2c2c2;\n    border-radius: 5px;\n    color: #c2c2c2;\n    transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n  .btn-show-container .delete-btn-container .delete-btn:hover {\n    margin-bottom: 12px;\n    padding: 5px;\n    height: 45px;\n    width: 130px;\n    border: 5px solid #c2c2c2;\n    background-color: #d91919;\n    text-decoration: none; }\n\n@media (min-width: 900px) {\n  .row {\n    display: table; }\n  .row [class*=\"col-\"] {\n    float: none;\n    display: table-cell;\n    vertical-align: top; }\n  .button-container {\n    margin-top: 35px;\n    margin-bottom: 1px;\n    height: 60px;\n    text-align: center;\n    vertical-align: middle; }\n    .button-container .button {\n      margin-left: 83%;\n      padding: 5px;\n      display: inline-block;\n      text-align: center;\n      font-size: 20px;\n      height: 40px;\n      width: 15%;\n      background-color: rgba(255, 255, 255, 0);\n      border: 4px solid white;\n      border-radius: 5px;\n      color: white;\n      transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n    .button-container .button:hover {\n      margin-bottom: 12px;\n      padding: 6px;\n      height: 45px;\n      width: 16%;\n      border: 5px solid white;\n      background-color: #0a953e;\n      text-decoration: none;\n      cursor: pointer; }\n  ul {\n    font-family: 'PT Sans', sans-serif; }\n    ul .joke-li {\n      width: 100%;\n      height: 360px;\n      background-color: rgba(0, 0, 0, 0.8);\n      list-style-type: none;\n      border-radius: 10px;\n      border: 3px solid #f3c400;\n      margin-bottom: 20px; }\n      ul .joke-li .joke-details {\n        width: 24%; }\n        ul .joke-li .joke-details h3 {\n          color: #f3c400;\n          text-decoration: underline;\n          text-align: center; }\n        ul .joke-li .joke-details ul {\n          padding-top: 20px; }\n          ul .joke-li .joke-details ul li {\n            color: #f3c400;\n            width: 100%;\n            padding-top: 17px;\n            padding-bottom: 17px; }\n            ul .joke-li .joke-details ul li i {\n              color: #d91919;\n              padding-left: 0px; }\n          ul .joke-li .joke-details ul li:first-child {\n            width: 100%; }\n        ul .joke-li .joke-details .edit-btn-container {\n          padding-top: 90px;\n          padding-botom: 0;\n          height: 60px;\n          text-align: center; }\n          ul .joke-li .joke-details .edit-btn-container .edit-btn {\n            display: inline-block;\n            text-align: center;\n            font-size: 20px;\n            height: 40px;\n            padding: 3px;\n            cursor: pointer;\n            width: 120px;\n            background-color: rgba(255, 255, 255, 0);\n            border: 4px solid #c2c2c2;\n            border-radius: 5px;\n            color: #c2c2c2;\n            transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n          ul .joke-li .joke-details .edit-btn-container .edit-btn:hover {\n            margin-bottom: 12px;\n            padding: 5px;\n            height: 45px;\n            width: 130px;\n            border: 5px solid #c2c2c2;\n            background-color: #03346b;\n            text-decoration: none; }\n      ul .joke-li .joke-list-joke {\n        border-top: none;\n        border-left: 3px solid #f3c400;\n        padding-top: 0;\n        margin-top: 0;\n        color: #f3c400;\n        font-family: 'PT Sans', sans-serif;\n        font-size: 19px;\n        font-style: normal;\n        margin-bottom: 0px;\n        word-break: break-all;\n        vertical-align: middle; }\n      ul .joke-li .joke-list-edit {\n        height: 180px;\n        text-align: center;\n        vertical-align: middle; }\n        ul .joke-li .joke-list-edit a {\n          color: #f3c400;\n          font-size: 20px;\n          text-decoration: none; } }\n\nform {\n  padding: 10px;\n  border: 3px solid #f3c400;\n  border-radius: 10px;\n  background-color: rgba(0, 0, 0, 0.8);\n  transition: margin-top .2s,   margin-left .2s, margin-right .2s; }\n  form h3 {\n    text-align: center;\n    color: white; }\n  form label {\n    color: white; }\n  form input {\n    color: black; }\n  form textarea {\n    resize: vertical; }\n  form .back-btn-container {\n    padding-top: 10px;\n    padding-bottom: 10px;\n    padding-botom: 0;\n    height: 60px;\n    text-align: right; }\n    form .back-btn-container .back-btn {\n      display: inline-block;\n      text-align: center;\n      font-size: 20px;\n      height: 40px;\n      padding: 3px;\n      cursor: pointer;\n      width: 120px;\n      background-color: rgba(255, 255, 255, 0);\n      border: 4px solid #c2c2c2;\n      border-radius: 5px;\n      cursor: pointer;\n      color: #c2c2c2;\n      transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n    form .back-btn-container .back-btn:hover {\n      margin-bottom: 12px;\n      padding: 5px;\n      height: 45px;\n      width: 130px;\n      color: black;\n      border: 5px solid #c2c2c2;\n      background-color: #f3c400;\n      text-decoration: none; }\n  form .submit-btn-container {\n    padding-top: 10px;\n    padding-bottom: 10px;\n    padding-botom: 0;\n    height: 60px;\n    text-align: right; }\n    form .submit-btn-container .submit-btn {\n      display: inline-block;\n      text-align: center;\n      font-size: 20px;\n      height: 40px;\n      padding: 3px;\n      cursor: pointer;\n      width: 120px;\n      background-color: rgba(255, 255, 255, 0);\n      border: 4px solid #c2c2c2;\n      border-radius: 5px;\n      color: #c2c2c2;\n      transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n    form .submit-btn-container .submit-btn:hover {\n      margin-bottom: 12px;\n      padding: 5px;\n      height: 45px;\n      width: 130px;\n      border: 5px solid #c2c2c2;\n      background-color: #0a953e;\n      text-decoration: none; }\n\n@media (min-width: 300px) {\n  form {\n    margin-top: 20%;\n    margin-left: 0;\n    margin-right: 0; } }\n\n@media (min-width: 500px) {\n  form {\n    margin-top: 10%;\n    margin-left: 20%;\n    margin-right: 20%; } }\n\n.back-btn-container {\n  padding-top: 10px;\n  padding-botom: 0;\n  height: 60px;\n  text-align: center; }\n  .back-btn-container .back-btn {\n    display: inline-block;\n    text-align: center;\n    font-size: 20px;\n    height: 40px;\n    padding: 3px;\n    cursor: pointer;\n    width: 120px;\n    background-color: rgba(255, 255, 255, 0);\n    border: 4px solid #c2c2c2;\n    border-radius: 5px;\n    cursor: pointer;\n    color: #c2c2c2;\n    transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n  .back-btn-container .back-btn:hover {\n    margin-bottom: 12px;\n    padding: 5px;\n    height: 45px;\n    width: 130px;\n    color: black;\n    border: 5px solid #c2c2c2;\n    background-color: #f3c400;\n    text-decoration: none; }\n\nul .joke-single {\n  margin-top: 100px;\n  width: 100%;\n  height: auto;\n  background-color: rgba(0, 0, 0, 0.8);\n  list-style-type: none;\n  border-radius: 10px;\n  border: 3px solid #f3c400;\n  margin-bottom: 20px; }\n  ul .joke-single .joke-details h3 {\n    color: #f3c400;\n    text-decoration: underline;\n    text-align: center; }\n  ul .joke-single .joke-details ul {\n    padding-top: 20px; }\n    ul .joke-single .joke-details ul li {\n      color: #f3c400;\n      width: 100%;\n      padding-top: 17px;\n      padding-bottom: 17px; }\n      ul .joke-single .joke-details ul li i {\n        color: #d91919;\n        padding-left: 0px; }\n    ul .joke-single .joke-details ul li:first-child {\n      width: 100%; }\n  ul .joke-single .joke-details .edit-btn-container {\n    padding-top: 10px;\n    padding-botom: 0;\n    height: 60px;\n    text-align: center; }\n    ul .joke-single .joke-details .edit-btn-container .edit-btn {\n      display: inline-block;\n      text-align: center;\n      font-size: 20px;\n      height: 40px;\n      padding: 3px;\n      cursor: pointer;\n      width: 120px;\n      background-color: rgba(255, 255, 255, 0);\n      border: 4px solid #c2c2c2;\n      border-radius: 5px;\n      color: #c2c2c2;\n      transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n    ul .joke-single .joke-details .edit-btn-container .edit-btn:hover {\n      margin-bottom: 12px;\n      padding: 5px;\n      height: 45px;\n      width: 130px;\n      border: 5px solid #c2c2c2;\n      background-color: #03346b;\n      text-decoration: none; }\n  ul .joke-single .joke-details .delete-btn-container {\n    padding-top: 10px;\n    padding-botom: 0;\n    height: 60px;\n    text-align: center; }\n    ul .joke-single .joke-details .delete-btn-container .delete-btn {\n      display: inline-block;\n      text-align: center;\n      font-size: 20px;\n      height: 40px;\n      padding: 3px;\n      cursor: pointer;\n      width: 120px;\n      background-color: rgba(255, 255, 255, 0);\n      border: 4px solid #c2c2c2;\n      border-radius: 5px;\n      color: #c2c2c2;\n      transition: width .3s, height .3s, padding .3s, background-color .3s, border .1s; }\n    ul .joke-single .joke-details .delete-btn-container .delete-btn:hover {\n      margin-bottom: 12px;\n      padding: 5px;\n      height: 45px;\n      width: 130px;\n      border: 5px solid #c2c2c2;\n      background-color: #d91919;\n      text-decoration: none; }\n  ul .joke-single .joke-list-joke {\n    border-top: none;\n    padding-top: 0;\n    margin-top: 0;\n    color: #f3c400;\n    font-family: 'PT Sans', sans-serif;\n    font-size: 19px;\n    font-style: normal;\n    margin-bottom: 0px;\n    word-break: break-all;\n    vertical-align: middle; }\n  ul .joke-single .joke-list-edit {\n    height: 180px;\n    text-align: center;\n    vertical-align: middle; }\n    ul .joke-single .joke-list-edit a {\n      color: #f3c400;\n      font-size: 20px;\n      text-decoration: none; }\n\n@media (min-width: 900px) {\n  .joke-list-joke {\n    border-left: 3px solid #f3c400; } }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 347 */
+/* 350 */
 /***/ function(module, exports) {
 
 	/*
@@ -33294,7 +33875,7 @@
 
 
 /***/ },
-/* 348 */
+/* 351 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
