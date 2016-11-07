@@ -50,7 +50,7 @@ class JokeIndex extends Component {
         );
       } else {
         return (
-          <div>
+          <div className="wtf">
           <div className="header">
             <h1>Welcome to the</h1>
             <h1>Comedy Cellar</h1>

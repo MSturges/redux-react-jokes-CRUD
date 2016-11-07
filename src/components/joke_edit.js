@@ -35,7 +35,7 @@ class JokeEditt extends Component {
 
       <div>
       <form className="animated bounceInDown" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-      <h3>Create A New Post</h3>
+      <h3>Edit Joke</h3>
       <div className={ `form-group ${title.touched && title.invalid ? 'has-danger': ''}`}>
       <label>Title</label>
       <input type="text" className="form-control" {...title}/>
@@ -60,8 +60,13 @@ class JokeEditt extends Component {
       <div className='text-help form-control-label'>{joke.touched ? joke.error : ''}</div>
       </div>
 
-      <Link to="/" className="btn btn-danger">Back</Link>
-      <button type="submit" className="btn btn-primary">Submit</button>
+      <div className="submit-btn-container">
+      <button type="submit" className="submit-btn">Submit</button>
+      </div>
+      <div className="back-btn-container">
+        <Link to="/" className="back-btn">Back</Link>
+      </div>
+
       </form>
 
       </div>

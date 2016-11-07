@@ -4,23 +4,22 @@ import { Link } from 'react-router';
 const MobileList = (props) => {
   const MobileItems = props.jokes.map((joke) => {
     return (
-      <li className="joke-list animated bounceInUp row" key={joke.id}>
-      <div className="col-md-6 col-sm-6 col-xs-6 joke-list-item-container ">
+      <li className="joke-li animated bounceInUp row" key={joke.id}>
+      <div className="col-md-12 col-sm-12 col-xs-12 joke-details ">
 
-      <h5 className="firstH3"><span className="">Title</span></h5>
-      <h4 className="joke-list-item">{joke.title}</h4>
+      <h3>{joke.title}</h3>
 
-      <h5><span className="">Genre</span></h5>
-      <h4 className="joke-list-item">{joke.genre}</h4>
-
-      <h5><span className="">Author</span></h5>
-      <h4 className="joke-list-item">{joke.author}</h4>
+      <ul className="fa-ul">
+        <li><i className="fa-li fa fa-user-circle fa-3x " aria-hidden="true"></i>{joke.author}</li>
+        <li><i className="fa-li fa fa fa-tags fa-3x " aria-hidden="true"></i>{joke.genre}</li>
+      </ul>
+      <div className="edit-btn-container">
+        <Link className="edit-btn " to={"joke/" + joke.id}>Edit/Delete</Link>
+      </div>
 
       </div>
 
-      <div className="col-md-5 col-sm-5 col-xs-5 joke-list-edit">
-        <Link to={"joke/" + joke.id}>Edit/Delete</Link>
-      </div>
+
 
       <p className="col-md-12 col-sm-12 col-xs-12 joke-list-joke">{joke.joke}</p>
 

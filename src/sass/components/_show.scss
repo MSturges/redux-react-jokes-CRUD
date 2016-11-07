@@ -33,7 +33,7 @@ ul {
   .joke-single {
     margin-top: 100px;
     width: 100%;
-    height: 360px;
+    height: auto;
     background-color: rgba(0, 0, 0, .8);
     list-style-type: none;
     border-radius: 10px;
@@ -122,7 +122,6 @@ ul {
     }
     .joke-list-joke {
       border-top: none;
-      border-left: 3px solid rgb(243, 196, 0);
       padding-top: 0;
       margin-top: 0;
       color: rgb(243, 196, 0);
@@ -144,4 +143,10 @@ ul {
       }
     }
   }
+}
+@media (min-width: 900px) {
+  .joke-list-joke{
+    border-left: 3px solid rgb(243, 196, 0);
+  }
+
 }

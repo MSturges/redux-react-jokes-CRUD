@@ -8,8 +8,8 @@
     vertical-align: top;
   }
   .button-container {
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 35px;
+    margin-bottom: 1px;
     height: 60px;
     text-align: center;
     vertical-align: middle;
@@ -40,7 +40,7 @@
   }
 
   ul {
-    padding-left: 30px !important;
+    font-family: 'PT Sans', sans-serif;
     .joke-li {
       width: 100%;
       height: 360px;
@@ -72,7 +72,7 @@
           }
         }
         .edit-btn-container{
-          padding-top: 120px;
+          padding-top: 90px;
           padding-botom: 0;
           height: 60px;
           text-align: center;
