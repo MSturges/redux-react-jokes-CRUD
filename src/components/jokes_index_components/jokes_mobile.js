@@ -31,7 +31,7 @@ const MobileList = (props) => {
   return (
     <ul className="row">
     {MobileItems}
-  </ul>
+    </ul>
   );
 };
 

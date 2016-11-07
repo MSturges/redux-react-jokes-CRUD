@@ -40,7 +40,7 @@ class JokeIndex extends Component {
         return (
           <div>
           <div className="header">
-          <h1>Browse & Share your favorite Jokes!</h1>
+          <h1>Comedy Cellar</h1>
           </div>
           <div className="button-container">
           <Link className="animated bounceInDown button" to="/joke/new"> Add Joke </Link>
@@ -52,7 +52,8 @@ class JokeIndex extends Component {
         return (
           <div>
           <div className="header">
-          <h1>Browse & Share your favorite Jokes!</h1>
+            <h1>Welcome to the</h1>
+            <h1>Comedy Cellar</h1>
           </div>
           <div className="button-container">
           <Link className="animated bounceInLeft button" to="/joke/new"> Add Joke </Link>
@@ -64,6 +65,8 @@ class JokeIndex extends Component {
     } else {
       return (
         <div>
+        <Link className="animated bounceInDown button" to="/joke/new"> Add Joke </Link>
+
         <h1 className="animated infinite bounce">Loading...Would ya give it a Second?</h1>
         </div>
       );

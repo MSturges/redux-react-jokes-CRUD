@@ -1,5 +1,5 @@
 body {
-  background: url("/images/piano.jpeg") no-repeat center center fixed;
+  background: url("/images/background7.jpeg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -10,12 +10,23 @@ body {
 }
 
 .header {
-  background-color: rgba(0, 0, 0, .8);
-  border-radius: 10px;
+  background-color: rgba(0, 0, 0, .95);
+  height: 230px;
+  padding-top: 1px;
+  border-radius: 30px;
   text-align: center;
-  border: 2px solid orange;
-  margin-top: 20px;
+  margin-top: 35px;
+  box-shadow:2px 2px 10px 10px rgb(243, 196, 0);
   h1 {
-    color: orange;
+    font-family: 'Shrikhand', cursive;
+    color: rgb(243, 196, 0);
+    font-size: 75px;
+    text-shadow: 12px 12px rgb(217, 25, 25);
+  }
+  h1:first-child {
+    padding-right: 10%;
+  }
+  h1:nth-child(2) {
+    padding-left: 10%;
   }
 }
