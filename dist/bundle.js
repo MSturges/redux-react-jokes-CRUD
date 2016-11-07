@@ -32078,7 +32078,7 @@
 	    key: 'render',
 	    value: function render() {
 	      if (this.props.jokes.jokes.length > 0) {
-	        if (this.state.width < 988) {
+	        if (this.state.width < 900) {
 	          return _react2.default.createElement(
 	            'div',
 	            null,
