@@ -36,7 +36,7 @@ class JokeIndex extends Component {
 
   render() {
     if (this.props.jokes.jokes.length > 0) {
-      if (this.state.width < 900) {
+      if (this.state.width < 988) {
         return (
           <div>
           <div className="header">
