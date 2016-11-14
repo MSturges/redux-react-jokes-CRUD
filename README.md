@@ -23,7 +23,7 @@ PostgreSQL
 #### Download Instructions:
 
 ```
-Clone into any repo of your choosing
+Clone into any directory of your choosing
 npm run build
 npm run start
 ```
