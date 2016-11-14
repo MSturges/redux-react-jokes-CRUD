@@ -1,6 +1,21 @@
-# React Redux Jokes CRUD application
+# Comedy Cellar
+Is a React-Redux CRUD Application
 
-Create Jokes
-Read Jokes
-Update Jokes
-Delete Jokes
+## Live Site:
+[https://comedy-cellar.herokuapp.com/]('https://comedy-cellar.herokuapp.com/')
+
+#### This project has both front-end and back-end
+
+#### Technologies Used:
+
+```
+SCSS
+React
+Redux
+Redux-React
+Material-Design
+NodeJS
+ExpressJS
+WebPack
+PostgreSQL
+```
